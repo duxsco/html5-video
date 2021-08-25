@@ -8,12 +8,7 @@ if [ $# -ne 1 ] || [ -z ${1+x} ]; then
 fi
 
 SRC="$1"
-
-ffget() {
-  ffprobe -v error -select_streams v:0 -show_entries stream="$1" -of default=nw=1:nk=1 "$2"
-}
-
-ORIG_HEIGHT="$(ffget height "${SRC}")"
+ORIG_HEIGHT="$(ffprobe -v error -select_streams v:0 -show_entries stream=height -of default=nw=1:nk=1 "${SRC}")"
 
 # video quality (-crf #): https://developers.google.com/media/vp9/settings/vod/#quality
 declare -A WEBM_VIDEO_QUALITY
