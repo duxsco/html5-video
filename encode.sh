@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-if [ $# -ne 1 ] || [ -z ${1+x} ]; then
+if [ $# -ne 1 ] || [ -z $1 ]; then
   echo "You need to pass one input video file: bash encode.sh videoFile"
   exit 1
 fi
