@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
 
-set -euo pipefail
+# Prevent tainting variables via environment
+# See: https://gist.github.com/duxsco/fad211d5828e09d0391f018834f955c9
+unset HEIGHT ORIG_HEIGHT SCALE SRC WEBM_VIDEO_QUALITY
 
-if [ $# -ne 1 ] || [ -z $1 ]; then
-  echo "You need to pass one input video file: bash encode.sh videoFile"
+if [[ $# -ne 1 ]] || [[ -z $1 ]]; then
+  echo "You need to pass one input video file: bash ${0##*/} videoFile"
   exit 1
 fi
 
@@ -33,7 +35,7 @@ for HEIGHT in "${!WEBM_VIDEO_QUALITY[@]}"; do
     ffmpeg -i "${SRC}" \
       ${SCALE} \
       -movflags +faststart \
-      -c:v libvpx-vp9 -b:v 0 -crf "${WEBM_VIDEO_QUALITY[${HEIGHT}]}" \
+      -c:v libvpx-vp9 -b:v 0 -crf "${WEBM_VIDEO_QUALITY[$HEIGHT]}" \
       -c:a libvorbis -q:a 3 \
       "${SRC%.*}_vp9_${HEIGHT}p.webm"
 
@@ -41,7 +43,7 @@ for HEIGHT in "${!WEBM_VIDEO_QUALITY[@]}"; do
     ffmpeg -i "${SRC}" \
       ${SCALE} \
       -movflags +faststart \
-      -c:v libaom-av1 -b:v 0 -crf "${WEBM_VIDEO_QUALITY[${HEIGHT}]}" \
+      -c:v libaom-av1 -b:v 0 -crf "${WEBM_VIDEO_QUALITY[$HEIGHT]}" \
       -c:a libopus -b:a 128k \
       "${SRC%.*}_av1_${HEIGHT}p.webm"
 
